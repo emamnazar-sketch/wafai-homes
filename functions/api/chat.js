@@ -1,7 +1,7 @@
 // Wafai Homes website chatbot — Cloudflare Pages Function backed by Workers AI.
 // Requires the Workers AI binding named "AI" on the Pages project.
 // If the binding is missing or the model call fails, returns 503 so the
-// widget falls back to lead capture (name/phone -> FormSubmit email).
+// widget falls back to lead capture (name/phone -> /api/lead email).
 //
 // Knowledge base: built from the full text of WafaiHomes.com (2026-11-16).
 // Live MLS/Zillow listing data is NOT scraped or embedded — listing data is
