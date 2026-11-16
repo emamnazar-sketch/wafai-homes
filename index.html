@@ -475,17 +475,19 @@ var sb=document.querySelector('.stickybar');window.addEventListener('scroll',fun
     <button class="wfc-q" data-q="I want to sell my home. How does it work?">I'm selling</button>
     <button class="wfc-q" data-q="What is my home worth?">What's my home worth?</button>
   </div>
+  <div class="wfc-quick" id="wfcContactRow"><button class="wfc-q" id="wfcContact" type="button">📞 Have Mohammad contact me</button></div>
   <form class="wfc-row" id="wfcForm">
     <input id="wfcInput" type="text" placeholder="Type your question…" autocomplete="off" maxlength="500">
     <button class="wfc-send" id="wfcSend" type="submit">Send</button>
   </form>
   <form class="wfc-lead" id="wfcLead">
-    <p class="wfc-note">The chat assistant is offline right now. Leave your name and number and Mohammad will get back to you — or call <a href="tel:+15303016691">(530) 301-6691</a>.</p>
+    <p class="wfc-note" id="wfcLeadNote">Leave your name and number — Mohammad gets an <b>instant email alert</b> and will reach out shortly. Rather talk now? Call <a href="tel:+15303016691">(530) 301-6691</a>.</p>
     <input id="wfcName" type="text" placeholder="Your name" maxlength="80">
     <input id="wfcPhone" type="tel" placeholder="Your phone" maxlength="30">
     <textarea id="wfcMsg" rows="2" placeholder="What can Mohammad help with?" maxlength="500"></textarea>
     <p class="wfc-consent">By submitting this form, you agree that Mohammad Wafai / Wafai Homes (eXp Realty) may call, text, and email you about real estate services, including by automated means. Msg &amp; data rates may apply. Consent is not a condition of purchase. Reply STOP to opt out of texts.</p>
     <button class="wfc-send" id="wfcLeadSend" type="submit">Send to Mohammad</button>
+    <button class="wfc-q" id="wfcBack" type="button">← Back to chat</button>
   </form>
 </div>
 <script>
@@ -497,15 +499,18 @@ function closePanel(){panel.classList.remove('open');btn.style.display='';}
 btn.addEventListener('click',openPanel);
 document.getElementById('wfcClose').addEventListener('click',closePanel);
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&panel.classList.contains('open'))closePanel();});
-function showLead(){if(dead)return;dead=true;form.style.display='none';quick.style.display='none';lead.style.display='flex';add("I can't reach the assistant right now — the form below goes straight to Mohammad.","bot");}
+function showLeadForm(manual){lead.style.display='flex';form.style.display='none';quick.style.display='none';document.getElementById('wfcContactRow').style.display='none';if(!manual)add("I can't reach the assistant right now — the form below goes straight to Mohammad.","bot");}
+function showLead(){if(dead)return;dead=true;showLeadForm(false);}
+document.getElementById('wfcContact').addEventListener('click',function(){showLeadForm(true);});
+document.getElementById('wfcBack').addEventListener('click',function(){lead.style.display='none';if(!dead){form.style.display='';quick.style.display='';document.getElementById('wfcContactRow').style.display='';}});
 function ask(text){text=(text||'').trim();if(!text||dead)return;add(text,'user');history.push({role:'user',content:text});input.value='';send.disabled=true;var typing=add('Typing…','bot');
 fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history})}).then(function(r){if(!r.ok)throw new Error('bad');return r.json();}).then(function(j){typing.remove();if(!j.reply)throw new Error('empty');add(j.reply,'bot');history.push({role:'assistant',content:j.reply});send.disabled=false;input.focus();}).catch(function(){typing.remove();showLead();});}
 form.addEventListener('submit',function(e){e.preventDefault();ask(input.value);});
 quick.addEventListener('click',function(e){var b=e.target.closest('.wfc-q');if(b)ask(b.getAttribute('data-q'));});
 lead.addEventListener('submit',function(e){e.preventDefault();var name=document.getElementById('wfcName').value.trim(),phone=document.getElementById('wfcPhone').value.trim(),msg=document.getElementById('wfcMsg').value.trim();if(!name||!phone){alert('Please add your name and phone so Mohammad can reach you.');return;}
 var b=document.getElementById('wfcLeadSend');b.disabled=true;b.textContent='Sending…';
-var payload={_subject:'New lead from WafaiHomes.com - Website Chatbot',_template:'table',_captcha:'true'};payload['Name']=name;payload['Phone']=phone;if(msg)payload['Message']=msg;
-fetch('https://formsubmit.co/ajax/wafaihomes@gmail.com',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)}).then(function(r){if(!r.ok)throw new Error('send failed');lead.style.display='none';add("Thanks, "+name.split(' ')[0]+" — Mohammad has your message and will reach out shortly. Anything urgent, call (530) 301-6691.","bot");}).catch(function(){b.disabled=false;b.textContent='Send to Mohammad';alert('Sorry, that did not send. Please call (530) 301-6691 or email wafaihomes@gmail.com.');});});
+var payload={_subject:'NEW CHAT LEAD from WafaiHomes.com - Website Chatbot',_template:'table',_captcha:'true'};payload['Name']=name;payload['Phone']=phone;if(msg)payload['Message']=msg;if(history.length){payload['Chat transcript']=history.map(function(h){return (h.role==='user'?'Visitor: ':'Assistant: ')+h.content;}).join('\n').slice(0,1800);}
+fetch('https://formsubmit.co/ajax/wafaihomes@gmail.com',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)}).then(function(r){if(!r.ok)throw new Error('send failed');lead.style.display='none';if(!dead){form.style.display='';quick.style.display='';document.getElementById('wfcContactRow').style.display='';}add("Thanks, "+name.split(' ')[0]+" — Mohammad just got an instant alert with your number and will reach out shortly. Anything urgent, call (530) 301-6691.","bot");var wa=document.createElement('div');wa.className='wfc-m bot';var wlink=document.createElement('a');wlink.href='https://wa.me/15303016691?text='+encodeURIComponent('Hi Mohammad, this is '+name+' ('+phone+') from your website chat.'+(msg?' '+msg:''));wlink.target='_blank';wlink.rel='noopener';wlink.textContent='💬 Or message him right now on WhatsApp';wlink.style.cssText='color:#131E33;font-weight:600;text-decoration:underline';wa.appendChild(wlink);msgs.appendChild(wa);msgs.scrollTop=msgs.scrollHeight;}).catch(function(){b.disabled=false;b.textContent='Send to Mohammad';alert('Sorry, that did not send. Please call (530) 301-6691 or email wafaihomes@gmail.com.');});});
 })();
 </script>
 
