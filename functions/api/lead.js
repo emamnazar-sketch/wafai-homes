@@ -47,7 +47,7 @@ export async function onRequestPost(context) {
   if (!lines.length) lines.push("(no fields submitted)");
 
   const payload = {
-    from: "Wafai Homes Website <hello@thefamilyground.com>",
+    from: "Wafai Homes Website <onboarding@resend.dev>",
     to: ["wafaihomes@gmail.com"],
     subject,
     text: lines.join("\n"),
