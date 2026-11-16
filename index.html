@@ -495,7 +495,7 @@ function calc(){var price=+document.getElementById('price').value,down=+document
 function fetchWithTimeout(url,opts,ms){if(!('AbortController' in window))return fetch(url,opts);var c=new AbortController();var t=setTimeout(function(){c.abort();},ms);var o={};for(var k in opts)o[k]=opts[k];o.signal=c.signal;return fetch(url,o).then(function(r){clearTimeout(t);return r;},function(e){clearTimeout(t);throw e;});}
 var btn=document.getElementById('wfcBtn'),panel=document.getElementById('wfcPanel'),msgs=document.getElementById('wfcMsgs'),form=document.getElementById('wfcForm'),input=document.getElementById('wfcInput'),send=document.getElementById('wfcSend'),quick=document.getElementById('wfcQuick'),lead=document.getElementById('wfcLead'),history=[],opened=false,dead=false;
 function add(text,who){var d=document.createElement('div');d.className='wfc-m '+who;d.textContent=text;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
-function openPanel(){panel.classList.add('open');btn.style.display='none';if(!opened){opened=true;add("Hi, I'm the Wafai Homes assistant. Ask me about buying, selling, or what your home is worth — or tap a button below.","bot");}setTimeout(function(){input.focus();},60);}
+function openPanel(){panel.classList.add('open');btn.style.display='none';if(!opened){opened=true;add("Hi, I'm the Wafai Homes assistant — I help visitors here for Mohammad Wafai. Ask me about buying, selling, or what your home is worth — or tap a button below.","bot");}setTimeout(function(){input.focus();},60);}
 function closePanel(){panel.classList.remove('open');btn.style.display='';}
 btn.addEventListener('click',openPanel);
 document.getElementById('wfcClose').addEventListener('click',closePanel);
