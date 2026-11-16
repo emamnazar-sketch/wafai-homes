@@ -99,7 +99,7 @@ details{border:1px solid var(--line);background:var(--card);border-radius:14px;p
 .evalband h2{color:#fff}.evalband p{color:#c9d1de}
 .evalband input{background:#fff;color:#131e33}
 footer{background:var(--navy);color:#c9d1de;padding:44px 0 30px} footer a{color:#fff}
-.stickybar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:none;gap:10px;padding:10px;background:var(--card);border-top:1px solid var(--line);transform:translateY(110%);transition:transform .25s} .stickybar.show{transform:none} .stickybar .btn{flex:1}
+.stickybar{display:none!important;position:fixed;left:0;right:0;bottom:0;z-index:60;gap:10px;padding:10px;background:var(--card);border-top:1px solid var(--line);transform:translateY(110%);transition:transform .25s} .stickybar.show{transform:none} .stickybar .btn{flex:1}
 @media(max-width:760px){.stickybar{display:flex}}
 .cred{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px dashed var(--line);font-weight:600}
 .cred:first-of-type{border-top:none}
@@ -394,7 +394,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--blue);outline-of
   <p style="font-size:.82rem"><a href="/privacy.html">Privacy Policy</a> · <a href="/terms.html">Terms &amp; Conditions</a></p>
 </div></footer>
 
-<div class="stickybar"><a class="btn gold" href="tel:+15303016691">Call Now</a><a class="btn" href="#consult">Free Consultation</a></div>
+
 
 <script>
 var listings=[
@@ -423,8 +423,8 @@ document.getElementById('reviewGrid').innerHTML=reviews.map(function(r){return '
 
 var LEAD_ENDPOINT='https://formsubmit.co/ajax/wafaihomes@gmail.com';
 function fieldVal(id){var el=document.getElementById(id);return el?el.value.trim():'';}
-function wireForm(formId,successId,subject,fields){var f=document.getElementById(formId);f.addEventListener('submit',function(e){e.preventDefault();var data={_subject:subject,_template:'table',_captcha:'true'};fields.forEach(function(pair){data[pair[0]]=fieldVal(pair[1]);});var btn=f.querySelector('button');if(btn){btn.disabled=true;btn.textContent='Sending...';}
-fetch(LEAD_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data)}).then(function(r){if(!r.ok)throw new Error('send failed');f.style.display='none';document.getElementById(successId).style.display='block';}).catch(function(){if(btn){btn.disabled=false;btn.textContent='Try again';}alert('Something went wrong sending your request. Please call Mohammad at (530) 301-6691 or email wafaihomes@gmail.com.');});});}
+function wireForm(formId,successId,subject,fields){var f=document.getElementById(formId);f.addEventListener('submit',function(e){e.preventDefault();var data={_subject:subject,_template:'table',_captcha:'false'};fields.forEach(function(pair){data[pair[0]]=fieldVal(pair[1]);});var btn=f.querySelector('button');if(btn){btn.disabled=true;btn.textContent='Sending...';}
+var ctl=('AbortController' in window)?new AbortController():null;var to=ctl?setTimeout(function(){ctl.abort();},15000):0;fetch(LEAD_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data),signal:ctl?ctl.signal:undefined}).then(function(r){clearTimeout(to);if(!r.ok)throw new Error('send failed');f.style.display='none';document.getElementById(successId).style.display='block';}).catch(function(){clearTimeout(to);if(btn){btn.disabled=false;btn.textContent='Try again';}alert('Something went wrong sending your request. Please call Mohammad at (530) 301-6691 or email wafaihomes@gmail.com.');});});}
 wireForm('leadForm','leadSuccess','New lead from WafaiHomes.com - Free Guide Booklets',[['First name','fname'],['Last name','lname'],['Email','email'],['Phone','phone'],['Interest','interest'],['City of interest','city'],['Guide requested','guide']]);
 wireForm('evalForm','evalSuccess','New lead from WafaiHomes.com - Free Home Evaluation',[['Property address','evalAddr'],['Name','evalName'],['Send evaluation to','evalContact']]);
 wireForm('consultForm','consultSuccess','New lead from WafaiHomes.com - Consultation Request',[['Name','cname'],['Phone','cphone'],['Timeline','cwhen'],['Message','cmsg']]);
@@ -436,12 +436,12 @@ function calc(){var price=+document.getElementById('price').value,down=+document
  document.getElementById('payOut').textContent='$'+Math.round(pay).toLocaleString()+'/mo';
  document.getElementById('loanOut').textContent='Loan of $'+loan.toLocaleString()+' with $'+(price-loan).toLocaleString()+' down.';}
 ['price','down','rate'].forEach(function(id){document.getElementById(id).addEventListener('input',calc)});calc();
-var sb=document.querySelector('.stickybar');window.addEventListener('scroll',function(){sb.classList.toggle('show',window.scrollY>650)},{passive:true});
+
 </script>
 <style>
-.wfc-btn{position:fixed;right:18px;bottom:18px;z-index:9998;background:#131E33;color:#fff;border:2px solid #B8922A;border-radius:999px;padding:13px 20px;font:600 15px/1.2 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;box-shadow:0 6px 22px rgba(19,30,51,.35)}
+.wfc-btn{position:fixed;right:18px;bottom:18px;z-index:99999;background:#131E33;color:#fff;border:2px solid #B8922A;border-radius:999px;padding:13px 20px;font:600 15px/1.2 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;box-shadow:0 6px 22px rgba(19,30,51,.35)}
 .wfc-btn:hover{background:#1d2c49}
-.wfc-panel{position:fixed;right:18px;bottom:76px;z-index:9999;width:min(360px,calc(100vw - 24px));height:min(520px,calc(100vh - 110px));background:#fff;border:1px solid #d8dce3;border-radius:16px;box-shadow:0 14px 44px rgba(19,30,51,.28);display:none;flex-direction:column;overflow:hidden;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.wfc-panel{position:fixed;right:18px;bottom:76px;z-index:99999;width:min(360px,calc(100vw - 24px));height:min(520px,calc(100vh - 110px));background:#fff;border:1px solid #d8dce3;border-radius:16px;box-shadow:0 14px 44px rgba(19,30,51,.28);display:none;flex-direction:column;overflow:hidden;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 .wfc-panel.open{display:flex}
 .wfc-head{background:#131E33;color:#fff;padding:13px 16px;display:flex;align-items:center;justify-content:space-between}
 .wfc-head b{font-size:15px}
@@ -492,6 +492,7 @@ var sb=document.querySelector('.stickybar');window.addEventListener('scroll',fun
 </div>
 <script>
 (function(){
+function fetchWithTimeout(url,opts,ms){if(!('AbortController' in window))return fetch(url,opts);var c=new AbortController();var t=setTimeout(function(){c.abort();},ms);var o={};for(var k in opts)o[k]=opts[k];o.signal=c.signal;return fetch(url,o).then(function(r){clearTimeout(t);return r;},function(e){clearTimeout(t);throw e;});}
 var btn=document.getElementById('wfcBtn'),panel=document.getElementById('wfcPanel'),msgs=document.getElementById('wfcMsgs'),form=document.getElementById('wfcForm'),input=document.getElementById('wfcInput'),send=document.getElementById('wfcSend'),quick=document.getElementById('wfcQuick'),lead=document.getElementById('wfcLead'),history=[],opened=false,dead=false;
 function add(text,who){var d=document.createElement('div');d.className='wfc-m '+who;d.textContent=text;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
 function openPanel(){panel.classList.add('open');btn.style.display='none';if(!opened){opened=true;add("Hi, I'm the Wafai Homes assistant. Ask me about buying, selling, or what your home is worth — or tap a button below.","bot");}setTimeout(function(){input.focus();},60);}
@@ -504,13 +505,13 @@ function showLead(){if(dead)return;dead=true;showLeadForm(false);}
 document.getElementById('wfcContact').addEventListener('click',function(){showLeadForm(true);});
 document.getElementById('wfcBack').addEventListener('click',function(){lead.style.display='none';if(!dead){form.style.display='';quick.style.display='';document.getElementById('wfcContactRow').style.display='';}});
 function ask(text){text=(text||'').trim();if(!text||dead)return;add(text,'user');history.push({role:'user',content:text});input.value='';send.disabled=true;var typing=add('Typing…','bot');
-fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history})}).then(function(r){if(!r.ok)throw new Error('bad');return r.json();}).then(function(j){typing.remove();if(!j.reply)throw new Error('empty');add(j.reply,'bot');history.push({role:'assistant',content:j.reply});send.disabled=false;input.focus();}).catch(function(){typing.remove();showLead();});}
+fetchWithTimeout('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history})},25000).then(function(r){if(!r.ok)throw new Error('bad');return r.json();}).then(function(j){typing.remove();if(!j.reply)throw new Error('empty');add(j.reply,'bot');history.push({role:'assistant',content:j.reply});send.disabled=false;input.focus();}).catch(function(){typing.remove();showLead();});}
 form.addEventListener('submit',function(e){e.preventDefault();ask(input.value);});
 quick.addEventListener('click',function(e){var b=e.target.closest('.wfc-q');if(b)ask(b.getAttribute('data-q'));});
 lead.addEventListener('submit',function(e){e.preventDefault();var name=document.getElementById('wfcName').value.trim(),phone=document.getElementById('wfcPhone').value.trim(),msg=document.getElementById('wfcMsg').value.trim();if(!name||!phone){alert('Please add your name and phone so Mohammad can reach you.');return;}
 var b=document.getElementById('wfcLeadSend');b.disabled=true;b.textContent='Sending…';
-var payload={_subject:'NEW CHAT LEAD from WafaiHomes.com - Website Chatbot',_template:'table',_captcha:'true'};payload['Name']=name;payload['Phone']=phone;if(msg)payload['Message']=msg;if(history.length){payload['Chat transcript']=history.map(function(h){return (h.role==='user'?'Visitor: ':'Assistant: ')+h.content;}).join('\n').slice(0,1800);}
-fetch('https://formsubmit.co/ajax/wafaihomes@gmail.com',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)}).then(function(r){if(!r.ok)throw new Error('send failed');lead.style.display='none';if(!dead){form.style.display='';quick.style.display='';document.getElementById('wfcContactRow').style.display='';}add("Thanks, "+name.split(' ')[0]+" — Mohammad just got an instant alert with your number and will reach out shortly. Anything urgent, call (530) 301-6691.","bot");var wa=document.createElement('div');wa.className='wfc-m bot';var wlink=document.createElement('a');wlink.href='https://wa.me/15303016691?text='+encodeURIComponent('Hi Mohammad, this is '+name+' ('+phone+') from your website chat.'+(msg?' '+msg:''));wlink.target='_blank';wlink.rel='noopener';wlink.textContent='💬 Or message him right now on WhatsApp';wlink.style.cssText='color:#131E33;font-weight:600;text-decoration:underline';wa.appendChild(wlink);msgs.appendChild(wa);msgs.scrollTop=msgs.scrollHeight;}).catch(function(){b.disabled=false;b.textContent='Send to Mohammad';alert('Sorry, that did not send. Please call (530) 301-6691 or email wafaihomes@gmail.com.');});});
+var payload={_subject:'NEW CHAT LEAD from WafaiHomes.com - Website Chatbot',_template:'table',_captcha:'false'};payload['Name']=name;payload['Phone']=phone;if(msg)payload['Message']=msg;if(history.length){payload['Chat transcript']=history.map(function(h){return (h.role==='user'?'Visitor: ':'Assistant: ')+h.content;}).join('\n').slice(0,1800);}
+fetchWithTimeout('https://formsubmit.co/ajax/wafaihomes@gmail.com',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)},15000).then(function(r){if(!r.ok)throw new Error('send failed');lead.style.display='none';if(!dead){form.style.display='';quick.style.display='';document.getElementById('wfcContactRow').style.display='';}add("Thanks, "+name.split(' ')[0]+" — Mohammad just got an instant alert with your number and will reach out shortly. Anything urgent, call (530) 301-6691.","bot");var wa=document.createElement('div');wa.className='wfc-m bot';var wlink=document.createElement('a');wlink.href='https://wa.me/15303016691?text='+encodeURIComponent('Hi Mohammad, this is '+name+' ('+phone+') from your website chat.'+(msg?' '+msg:''));wlink.target='_blank';wlink.rel='noopener';wlink.textContent='💬 Or message him right now on WhatsApp';wlink.style.cssText='color:#131E33;font-weight:600;text-decoration:underline';wa.appendChild(wlink);msgs.appendChild(wa);msgs.scrollTop=msgs.scrollHeight;}).catch(function(){b.disabled=false;b.textContent='Send to Mohammad';alert('Sorry, that did not send. Please call (530) 301-6691 or email wafaihomes@gmail.com.');});});
 })();
 </script>
 
