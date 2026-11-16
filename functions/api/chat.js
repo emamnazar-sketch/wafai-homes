@@ -32,7 +32,7 @@ const SYSTEM_PROMPT = [
 export async function onRequestPost(context) {
   const { request, env } = context;
   if (!env.AI) {
-    return Response.json({ error: "ai_unavailable" }, { status: 503 });
+    return Response.json({ error: "ai_unavailable", detail: "no_binding" }, { status: 503 });
   }
   let body;
   try {
@@ -59,7 +59,7 @@ export async function onRequestPost(context) {
     if (!reply) throw new Error("empty reply");
     return Response.json({ reply: reply });
   } catch (e) {
-    return Response.json({ error: "ai_unavailable" }, { status: 503 });
+    return Response.json({ error: "ai_unavailable", detail: String((e && e.message) || e).slice(0, 300) }, { status: 503 });
   }
 }
 
