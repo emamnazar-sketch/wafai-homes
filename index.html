@@ -421,8 +421,13 @@ var reviews=[
 ];
 document.getElementById('reviewGrid').innerHTML=reviews.map(function(r){return '<article class="card"><span class="stars">★★★★★</span><p class="quote">"'+r[2]+'"</p><p class="who">'+r[0]+' <span>· '+r[1]+'</span></p></article>';}).join('');
 
-function wireForm(formId,successId){var f=document.getElementById(formId);f.addEventListener('submit',function(e){e.preventDefault();f.style.display='none';document.getElementById(successId).style.display='block';});}
-wireForm('leadForm','leadSuccess'); wireForm('evalForm','evalSuccess'); wireForm('consultForm','consultSuccess');
+var LEAD_ENDPOINT='https://formsubmit.co/ajax/wafaihomes@gmail.com';
+function fieldVal(id){var el=document.getElementById(id);return el?el.value.trim():'';}
+function wireForm(formId,successId,subject,fields){var f=document.getElementById(formId);f.addEventListener('submit',function(e){e.preventDefault();var data={_subject:subject,_template:'table',_captcha:'true'};fields.forEach(function(pair){data[pair[0]]=fieldVal(pair[1]);});var btn=f.querySelector('button');if(btn){btn.disabled=true;btn.textContent='Sending...';}
+fetch(LEAD_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data)}).then(function(r){if(!r.ok)throw new Error('send failed');f.style.display='none';document.getElementById(successId).style.display='block';}).catch(function(){if(btn){btn.disabled=false;btn.textContent='Try again';}alert('Something went wrong sending your request. Please call Mohammad at (530) 301-6691 or email wafaihomes@gmail.com.');});});}
+wireForm('leadForm','leadSuccess','New lead from WafaiHomes.com - Free Guide Booklets',[['First name','fname'],['Last name','lname'],['Email','email'],['Phone','phone'],['Interest','interest'],['City of interest','city'],['Guide requested','guide']]);
+wireForm('evalForm','evalSuccess','New lead from WafaiHomes.com - Free Home Evaluation',[['Property address','evalAddr'],['Name','evalName'],['Send evaluation to','evalContact']]);
+wireForm('consultForm','consultSuccess','New lead from WafaiHomes.com - Consultation Request',[['Name','cname'],['Phone','cphone'],['Timeline','cwhen'],['Message','cmsg']]);
 document.querySelectorAll('.guide-jump').forEach(function(b){b.addEventListener('click',function(){document.getElementById('lead').scrollIntoView({behavior:'smooth'});});});
 
 function calc(){var price=+document.getElementById('price').value,down=+document.getElementById('down').value,rate=+document.getElementById('rate').value;
